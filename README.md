@@ -68,8 +68,8 @@ API tersedia untuk akses data artikel dengan metode standar:
 
 1. **Clone repo:**
    ```bash
-   git clone https://github.com/username/rsup-surabaya-test.git
-   cd rsup-surabaya-test
+   git clone https://github.com/adith-widhiantara/rsup-test.git
+   cd rsup-test
    ```
 
 2. **Install dependency:**
