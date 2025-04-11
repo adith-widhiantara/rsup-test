@@ -24,6 +24,8 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
 });
 
 Route::middleware(['auth', 'role:admin,editor'])->group(function () {
+    Route::get('/articles/data', [ArticleController::class, 'data'])->name('articles.data');
+
     Route::resource('/articles', ArticleController::class);
 });
 

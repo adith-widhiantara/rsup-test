@@ -6,6 +6,7 @@ use App\Models\Article;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\Contracts\View\View;
 use Illuminate\Foundation\Application;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -45,19 +46,19 @@ class ArticleController extends Controller
         $request->validate([
             'title' => 'required|string|max:255',
             'content' => 'required|string',
-            'category' => 'required|string|max:255',
+            // 'category' => 'required|string|max:255',
             'file_path' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
         $article->update([
             'title' => $request->get('title'),
             'content' => $request->get('content'),
-            'category' => $request->get('category'),
+            'category' => $request->get('category') ?? $article->category,
             'file_path' => $request->file('file_path') ? $request->file('file_path')->store('articles') : null,
         ]);
 
         return redirect()
-            ->route('articles.index')
+            ->route('dashboard')
             ->with('success', 'Article updated successfully.');
     }
 
@@ -103,7 +104,19 @@ class ArticleController extends Controller
         $article->delete();
 
         return redirect()
-            ->route('articles.index')
+            ->route('dashboard')
             ->with('success', 'Article deleted successfully.');
+    }
+
+    public function data(): JsonResponse
+    {
+        $articles = Article::query()
+            ->select('id', 'title', 'author_id')
+            ->with('author:id,name')
+            ->get();
+
+        return response()->json([
+            'data' => $articles,
+        ]);
     }
 }
