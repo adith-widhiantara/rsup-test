@@ -23,10 +23,12 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('/users', UserController::class);
 });
 
-Route::middleware(['auth', 'role:admin,editor'])->group(function () {
+Route::middleware(['auth'])->group(function () {
+    Route::get('/articles', [ArticleController::class, 'index'])->name('articles.index');
     Route::get('/articles/data', [ArticleController::class, 'data'])->name('articles.data');
-
-    Route::resource('/articles', ArticleController::class);
+    Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
+    Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->middleware(['role:admin,editor'])->name('articles.edit');
+    Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->middleware(['role:admin,editor'])->name('articles.destroy');
 });
 
 require __DIR__.'/auth.php';
