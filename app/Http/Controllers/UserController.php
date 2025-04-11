@@ -19,9 +19,7 @@ class UserController extends Controller
      */
     public function index(): View|Application|Factory
     {
-        $users = User::all();
-
-        return view('users.index', compact('users'));
+        return view('user.index');
     }
 
     /**
@@ -99,14 +97,25 @@ class UserController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(User $user): JsonResponse
+    public function destroy(User $user): JsonResponse|RedirectResponse
     {
         if (Auth::id() === $user->id) {
-            return response()->json(['status' => 'error', 'message' => 'Tidak bisa menghapus diri sendiri.'], 400);
+            abort(403, 'You cannot delete your own account.');
         }
 
         $user->delete();
 
-        return response()->json(['status' => 'success']);
+        return redirect()
+            ->route('user.index')
+            ->with('success', 'User berhasil dihapus.');
+    }
+
+    public function data(Request $request): JsonResponse
+    {
+        $users = User::query()
+            ->select(['id', 'name', 'email', 'role'])
+            ->get();
+
+        return response()->json(['data' => $users]);
     }
 }

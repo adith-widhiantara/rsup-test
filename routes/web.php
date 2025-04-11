@@ -29,6 +29,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/articles/{article}', [ArticleController::class, 'show'])->name('articles.show');
     Route::get('/articles/{article}/edit', [ArticleController::class, 'edit'])->middleware(['role:admin,editor'])->name('articles.edit');
     Route::delete('/articles/{article}', [ArticleController::class, 'destroy'])->middleware(['role:admin,editor'])->name('articles.destroy');
+
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/user', [UserController::class, 'index'])->name('user.index');
+        Route::get('/user/data', [UserController::class, 'data'])->name('user.data');
+        Route::get('/user/{user}', [UserController::class, 'show'])->name('user.show');
+        Route::get('/user/{user}/edit', [UserController::class, 'edit'])->name('user.edit');
+        Route::delete('/user/{user}', [UserController::class, 'destroy'])->name('user.destroy');
+    });
 });
 
 require __DIR__.'/auth.php';
